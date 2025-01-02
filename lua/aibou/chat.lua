@@ -8,6 +8,7 @@ local build_window_opts = utils.build_window_opts
 local build_curl_cmd = utils.build_curl_cmd
 
 local default_assistant_message = config.default_assistant_message
+local default_config = config.default_config
 local aibou_settings = config.aibou_settings
 
 --
