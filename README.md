@@ -2,11 +2,11 @@
 * 「相棒」と共にコーディングするためのプラグインです。
 
 ## 背景
-* https://github.com/CopilotC-Nvim/CopilotChat.nvim を利用してみて素晴しいプラグインだと感じたのですが、私にとっては高機能すぎて使いこなせないと感じたのと、そもそもチャットをしながらコーディングすることに慣れていなさすぎるので、まずは簡単なところから始めようとしました。
+* [CopilotChat.nvim](https://github.com/CopilotC-Nvim/CopilotChat.nvim) を利用してみて素晴しいプラグインだと感じたのですが、私にとっては高機能すぎて使いこなせないと感じたのと、そもそもチャットをしながらコーディングすることに慣れていなさすぎるので、まずは簡単なところから始めようとしました。
 
 ## 使い方
 ### インストール
-* Lazy.nvim
+* [Lazy.nvim](https://github.com/folke/lazy.nvim)
 ```
 {
   'senkentarou/aibou.nvim',
