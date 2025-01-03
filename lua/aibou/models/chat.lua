@@ -1,3 +1,5 @@
+local Loading = require('aibou.models.loading')
+
 local abstract = require('aibou.models.abstract')
 local utils = require('aibou.utils')
 
@@ -159,8 +161,15 @@ function Chat:ask()
   vim.api.nvim_buf_set_lines(self.bufnr, -1, -1, true, { '', self.headlines.assistant, '' })
 
   local response = {}
+
+  local loading = Loading(self.bufnr)
+  local timer = loading:start()
+
   vim.fn.jobstart(build_curl_cmd(model.url, model.curl_opts), {
     on_stdout = function(_, data, _)
+      if loading.is_running then
+        loading:stop(timer)
+      end
       if data then
         for _, line in ipairs(data) do
           if line ~= '' then
