@@ -31,7 +31,7 @@ local Chat = class(function(self, opts)
   }
   self.latest_line_num = -1
 
-  vim.keymap.set({ 'n', 'i' }, '<C-s>', '', {
+  vim.keymap.set({ 'n', 'i' }, '<C-j>', '', {
     silent = true,
     buffer = self.bufnr,
     callback = function()
