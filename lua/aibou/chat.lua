@@ -61,7 +61,13 @@ end)
 function Chat:restore()
   -- メッセージブロック毎にセクション分けて表示
   for i, msg in ipairs(self.messages) do
-    vim.api.nvim_buf_set_lines(self.bufnr, i == 1 and 0 or -1, -1, true, { (msg.role == 'user') and self.headlines.user or self.headlines.assistant })
+    vim.api.nvim_buf_set_lines(
+      self.bufnr,
+      i == 1 and 0 or -1,
+      -1,
+      true,
+      { (msg.role == 'user') and self.headlines.user or self.headlines.assistant }
+    )
 
     local content = msg.content or ''
     if type(content) == 'table' then
@@ -130,7 +136,13 @@ function Chat:ask()
   local user_content = vim.fn.join(input, '\n')
 
   if user_content == '' then
-    vim.api.nvim_buf_set_lines(self.bufnr, -1, -1, true, { '質問内容が空です。再度入力してください。' })
+    vim.api.nvim_buf_set_lines(
+      self.bufnr,
+      -1,
+      -1,
+      true,
+      { '質問内容が空です。再度入力してください。' }
+    )
     vim.api.nvim_buf_set_lines(self.bufnr, -1, -1, true, { '', self.headlines.user, '' })
     self:set_cursor_to_latest_line()
     return
