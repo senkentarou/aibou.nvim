@@ -1,4 +1,4 @@
-local Aibou = require('aibou.aibou')
+local Aibou = require('aibou.models.aibou')
 
 local config = require('aibou.config')
 local default_config = config.default_config

@@ -1,33 +1,32 @@
+local abstract = require('aibou.models.abstract')
 local utils = require('aibou.utils')
-local config = require('aibou.config')
 
-local class = utils.class
+local class = abstract.class
+
 local generate_id = utils.generate_id
 local create_buf = utils.create_buf
 local build_window_opts = utils.build_window_opts
 local build_curl_cmd = utils.build_curl_cmd
-
-local default_assistant_message = config.default_assistant_message
-local default_config = config.default_config
-local aibou_settings = config.aibou_settings
 
 --
 -- チャットモデル
 --
 local Chat = class(function(self, opts)
   self.opts = opts or {}
+  self.models = opts.models or {}
 
   -- 現状、インスタンス生成と同時にバッファも生成する
   self.bufnr = opts.bufnr or create_buf()
   self.winid = opts.winid or -1
 
+  -- ユーザ指定のモデルを使用したい場合はconfig.modelを指定する
   self.id = opts.id or generate_id()
-  self.messages = opts.messages or { default_assistant_message }
-  self.config = opts.config or default_config
+  self.messages = opts.messages or {}
+  self.config = opts.config or opts.assistant
 
   self.headlines = {
     user = '#  User',
-    assistant = '#  Aibou (' .. self.opts.model .. ')',
+    assistant = '#  Aibou (' .. self.config.model .. ')',
     system = '#  System',
   }
   self.latest_line_num = -1
@@ -89,7 +88,7 @@ function Chat:open()
     vim.api.nvim_win_set_buf(self.winid, self.bufnr)
   else
     -- 会話ウィンドウが存在しない場合は新規作成
-    self.winid = vim.api.nvim_open_win(self.bufnr, true, build_window_opts(self.opts.window))
+    self.winid = vim.api.nvim_open_win(self.bufnr, true, build_window_opts(self.opts.system.window))
   end
   -- カーソル位置を最新行に更新しておく
   self:set_cursor_to_latest_line()
@@ -131,6 +130,12 @@ end
 
 -- 会話の中で相棒に質問する
 function Chat:ask()
+  local model = self.models[self.config.model]
+  if not model then
+    vim.notify(self.config.model .. 'モデルが指定されていません。', vim.log.levels.ERROR)
+    return
+  end
+
   -- ユーザーの入力を読み込む
   local input = vim.api.nvim_buf_get_lines(self.bufnr, self.latest_line_num - 1, -1, false)
   local user_content = vim.fn.join(input, '\n')
@@ -145,12 +150,6 @@ function Chat:ask()
     )
     vim.api.nvim_buf_set_lines(self.bufnr, -1, -1, true, { '', self.headlines.user, '' })
     self:set_cursor_to_latest_line()
-    return
-  end
-
-  local model = aibou_settings[self.config.model]
-  if not model then
-    vim.notify(self.config.model .. 'モデルは存在しません。', vim.log.levels.ERROR)
     return
   end
 
@@ -186,7 +185,7 @@ function Chat:ask()
           })
 
           -- ユーザーに次なる入力を促すための行を追加
-          vim.api.nvim_buf_set_lines(self.bufnr, -1, -1, false, { '', self.headlines.user, '' })
+          vim.api.nvim_buf_set_lines(self.bufnr, -1, -1, true, { '', self.headlines.user, '' })
           self:set_cursor_to_latest_line()
         end
       end)

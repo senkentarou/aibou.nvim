@@ -1,25 +1,25 @@
 local M = {}
 
 M.default_config = {
-  model = 'yesno',
-  window = {
-    layout = 'right', -- left, right, top, bottom
-    width = 0.4,
-    height = 0.4,
+  assistant = {
+    model = 'yesno',
   },
-  -- ${HOME}/.local/share/nvim/aibou.nvim/chat_history.json
-  chat_record_path = vim.fn.stdpath('data') .. '/aibou.nvim/chat_record.json',
-}
-
-M.default_assistant_message = {
-  role = 'assistant',
-  content = 'こんにちは！',
-}
-
-M.aibou_settings = {
-  yesno = {
-    url = 'https://yesno.wtf/api',
-    curl_opts = {},
+  system = {
+    window = {
+      layout = 'right', -- left, right, top, bottom
+      width = 0.4,
+      height = 0.4,
+    },
+    -- ${HOME}/.local/share/nvim/aibou.nvim/chat_history.json
+    chat_record_path = vim.fn.stdpath('data') .. '/aibou.nvim/chat_record.json',
+    -- ${HOME}/.config/nvim/aibou.nvim/local_assistant_config.json
+    local_assistant_config_path = vim.fn.stdpath('config') .. '/aibou.nvim/local_assistant_config.json',
+  },
+  models = {
+    yesno = {
+      url = 'https://yesno.wtf/api',
+      curl_opts = {},
+    },
   },
 }
 

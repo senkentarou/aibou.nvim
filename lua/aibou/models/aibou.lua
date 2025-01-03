@@ -1,19 +1,15 @@
-local Chat = require('aibou.chat')
+local Chat = require('aibou.models.chat')
 
-local utils = require('aibou.utils')
-local config = require('aibou.config')
+local abstract = require('aibou.models.abstract')
 
-local class = utils.class
-local default_config = config.default_config
+local class = abstract.class
 
 --
 -- 相棒モデル
 --
 local Aibou = class(function(self, opts)
-  -- ユーザ定義オプションを保持
   self.opts = opts or {}
 
-  self.model = opts.model or default_config.model
   self.chats = {}
   self.current_chat_id = nil
 end)
@@ -39,11 +35,11 @@ end
 -- これまでの会話の内容を復元する
 function Aibou:restore()
   -- 保存先が未指定の場合はスキップ (デフォルトは読み込む想定)
-  if not self.opts.chat_record_path then
+  if not self.opts.system.chat_record_path then
     return
   end
 
-  local file = io.open(self.opts.chat_record_path, 'r')
+  local file = io.open(self.opts.system.chat_record_path, 'r')
   if file then
     -- ファイルが存在する場合は内容を読み込む
     local raw = file:read('*a')
@@ -76,14 +72,14 @@ end
 -- これまでの会話の内容をバッファに書き込む
 function Aibou:save()
   -- 保存先が未指定の場合はスキップ (デフォルトは保存する想定)
-  if not self.opts.chat_record_path then
+  if not self.opts.system.chat_record_path then
     return
   end
 
-  local dir_path = vim.fn.fnamemodify(self.opts.chat_record_path, ':h')
+  local dir_path = vim.fn.fnamemodify(self.opts.system.chat_record_path, ':h')
   vim.fn.mkdir(dir_path, 'p')
 
-  local file = io.open(self.opts.chat_record_path, 'w')
+  local file = io.open(self.opts.system.chat_record_path, 'w')
   if file then
     local data = {}
     for _, chat in pairs(self.chats) do
